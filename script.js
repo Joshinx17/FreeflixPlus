@@ -27,7 +27,7 @@ const library = [
                 name: "FilmyFiy",
                 type: "Downloading",
                 url: "https://filmyfiy.dad/",
-                img: "https://img.iwebp.store/images/files/afaa901b76bc48d57a346319423035dd384208.png",
+                img: "https://aavotcom.in/wp-content/uploads/2025/02/Filmyfly.webp",
                 desc: "FilmyFiy.dad is a free movie download platform offering Bollywood, Hollywood, and regional Indian films in multiple resolutions. The site operates as a piracy-based service and frequently changes domains to avoid takedowns. Users should expect aggressive ads and redirects, making the use of a VPN and strong ad-blocker essential for safe browsing."
             },
             {
@@ -130,5 +130,6 @@ document.getElementById('close-drawer').onclick = closeDrawer;
 overlay.onclick = closeDrawer;
 
 window.onload = init;
+
 
 
