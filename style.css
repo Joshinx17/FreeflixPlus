@@ -294,3 +294,13 @@ footer {
     }
 }
 
+/* Refinement for type-tag when inside a card */
+.card-body .type-tag {
+    font-size: 0.6rem; /* Slightly smaller for the card layout */
+    margin-bottom: 10px;
+    padding: 2px 8px;
+}
+
+.card-body h3 {
+    margin-top: 5px; /* Better spacing between tag and title */
+}
