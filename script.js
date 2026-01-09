@@ -20,7 +20,7 @@ const library = [
                 name: "SSR Movies",
                 type: "Downloading",
                 url: "https://ssrmovies.you/",
-                img: "https://www.tradeflockasia.com/wp-content/uploads/2025/05/SSR-Movies-Stream-New-Releases-Fast.webp",
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1sR3gAEEFaA-Ryn9AeSuffsFSjWpxxPAc9A&s",
                 desc: "SSRMovies.you is a specialized digital platform for downloading Bollywood, Hollywood, and Hindi-dubbed content, particularly popular for its '300MB' highly compressed HD files. While it offers a fast, vast library of movies and web series for free, it is a piracy-based site operating through various mirror domains to bypass legal restrictions. Users should be aware of significant security risks from aggressive 'malvertising' and pop-ups; therefore, using a dedicated ad-blocker and a VPN is crucial to protect your personal data and maintain privacy while browsing."
             },
             {
@@ -106,6 +106,7 @@ function init() {
                     <div class="card" data-aos>
                         <div class="img-box"><img src="${item.img}" alt="${item.name}"></div>
                         <div class="card-body">
+                            <span class="type-tag">${item.type}</span>
                             <h3>${item.name}</h3>
                             <div class="btn-group">
                                 <a href="${item.url}" target="_blank" class="btn watch-now">Watch</a>
