@@ -17,6 +17,13 @@ const library = [
                 desc: "Bollyflix.do is a specialized streaming hub for Bollywood and South Indian cinema, offering high-definition movies and Hindi-dubbed content without subscription fees. While its massive, easily searchable library appeals to Indian cinema fans, the site is a pirate platform hosting unlicensed material. Users face significant risks from malware-heavy ads and tracking scripts, making the use of a robust VPN and ad-blockers mandatory for safety. Always prioritize legal alternatives to avoid copyright issues and security threats."
             },
             {
+                name: "NetMirror",
+                type: "Streaming",
+                url: "https://netmirror.gg/2/en",
+                img: "https://dxbapps.com/blogimages/NetMirror.webp",
+                desc: "Elevate your entertainment experience with Netmirror.app, the ultimate all-in-one streaming hub that brings the world’s most popular premium movies and series into one sleek, high-definition interface. Forget the hassle of multiple subscriptions and platform-hopping; this powerful aggregator gives you instant, free access to a massive library of trending content from all major OTT services. Designed for maximum convenience and limitless discovery, Netmirror.app is your premier gateway to a world of cinematic excitement—all just one click away!"
+            },
+            {
                 name: "SSR Movies",
                 type: "Downloading",
                 url: "https://ssrmovies.you/",
@@ -131,6 +138,7 @@ document.getElementById('close-drawer').onclick = closeDrawer;
 overlay.onclick = closeDrawer;
 
 window.onload = init;
+
 
 
 
