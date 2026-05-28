@@ -27,7 +27,7 @@ const library = [
                 name: "SSR Movies",
                 type: "Downloading",
                 url: "https://ssrmovies.you/",
-                img: "https://m5.paperblog.com/i/758/7585792/ssrmovies-download-bollywood-hd-movies-L-lHHt5c.jpeg",
+                img: "https://www.tradeflockasia.com/wp-content/uploads/2025/05/SSR-Movies-Stream-New-Releases-Fast.webp",
                 desc: "SSRMovies.you is a specialized digital platform for downloading Bollywood, Hollywood, and Hindi-dubbed content, particularly popular for its '300MB' highly compressed HD files. While it offers a fast, vast library of movies and web series for free, it is a piracy-based site operating through various mirror domains to bypass legal restrictions. Users should be aware of significant security risks from aggressive 'malvertising' and pop-ups; therefore, using a dedicated ad-blocker and a VPN is crucial to protect your personal data and maintain privacy while browsing."
             },
             {
@@ -164,6 +164,7 @@ document.getElementById('close-drawer').onclick = closeDrawer;
 overlay.onclick = closeDrawer;
 
 window.onload = init;
+
 
 
 
