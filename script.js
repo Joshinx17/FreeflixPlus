@@ -24,6 +24,27 @@ const library = [
                 desc: "Elevate your entertainment experience with Netmirror.app, the ultimate all-in-one streaming hub that brings the world’s most popular premium movies and series into one sleek, high-definition interface. Forget the hassle of multiple subscriptions and platform-hopping; this powerful aggregator gives you instant, free access to a massive library of trending content from all major OTT services. Designed for maximum convenience and limitless discovery, Netmirror.app is your premier gateway to a world of cinematic excitement—all just one click away!"
             },
             {
+                name: "7Movies",
+                type: "Streaming",
+                url: "https://7movies.ac/",
+                img: "./Assets/7Movies.png",
+                desc: "7Movies.ac is a modern streaming hub that provides free access to an extensive library of high-definition movies and TV shows. Featuring a sleek, subscription-free interface, users can easily discover new releases and filter by genre. As an unofficial aggregator, standard web safety precautions are recommended."
+            },
+            {
+                name: "CineJoy",
+                type: "Streaming",
+                url: "https://cinejoy.pk/",
+                img: "https://lh3.googleusercontent.com/YZJ_pQNlgk0M2hx5MWvPBueR_axdh906HLLOFGohL4MeH5rCKH9gFG0i3j8SYofQxqxA8MiFEhocTof1pbui7TpKjWu-xz7yDPE=h200",
+                desc: "CineJoy.pk is a modern streaming discovery platform that aggregates popular movies, trending TV shows, and award-winning titles from major networks and streaming providers into a single, clean interface. It allows users to browse comprehensive lists categorized by provider, genre, and critical acclaim."
+            },
+            {
+                name: "StreamEX",
+                type: "Streaming",
+                url: "https://www.streamex.hn/",
+                img: "https://play-lh.googleusercontent.com/Kza8C3JVcefCkeUjffHI5Fn9_xQqi2IKV29jr-yAvKW_ZgQ3gbMF728tlzlcnwqzdwiPuLZznvKgWGTXUyR55w",
+                desc: "Streamex.hn is an online entertainment destination designed for users seeking on-demand access to popular films and series without a paid subscription. Featuring a straightforward library layout, it lets visitors browse and watch various titles directly through their web browser."
+            },
+            {
                 name: "SSR Movies",
                 type: "Downloading",
                 url: "https://ssrmovies.you/",
@@ -84,6 +105,13 @@ const library = [
                 url: "https://watchanimeworld.in/",
                 img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs_ZFMklPRJ3oR94vyT3imWGspHi_8BPgoBg&s",
                 desc: "Watchanimeworld.in is a specialized streaming platform catering to Indian anime fans, offering a vast library of series and movies dubbed or subtitled in Hindi, Tamil, and Telugu. While it serves as a popular cultural bridge with high-quality HD streams and regular updates, it is an unofficial site hosting unlicensed content. To ensure safety from potential security risks like data tracking or malicious redirects, users should always browse with a VPN and an active ad-blocker."
+            },
+            {
+                name: "ToonPLay",
+                type: "Streaming",
+                url: "https://toonplay.in/",
+                img: "./Assets/ToonPlay.png",
+                desc: "ToonPlay.in is a feature-rich streaming portal tailored for animation enthusiasts, providing a vast collection of trending anime, classic cartoons, and theatrical movies. It includes multi-language audio support and regional indexing, making international content accessible to a broader audience."
             },
             {
                 name: "LACartoons",
