@@ -139,57 +139,278 @@ const library = [
 const mainContent = document.getElementById('main-content');
 const drawer = document.getElementById('drawer');
 const overlay = document.getElementById('overlay');
+const closeDrawerButton = document.getElementById('close-drawer');
+const searchInput = document.getElementById('search-input');
+const categoryFilter = document.getElementById('category-filter');
+const typeFilter = document.getElementById('type-filter');
+const sortSelect = document.getElementById('sort-select');
+const favoritesToggle = document.getElementById('favorites-toggle');
+const resultCount = document.getElementById('result-count');
+const emptyState = document.getElementById('empty-state');
+const clearFiltersButton = document.getElementById('clear-filters');
+const backToTopButton = document.getElementById('back-to-top');
+const allItems = library.flatMap((section) => section.items);
+const catalogRecords = [];
+const catalogSections = [];
+const state = { query: '', category: 'all', type: 'all', sort: 'curated', favoritesOnly: false };
+const FAVORITES_STORAGE_KEY = 'freeflixplus-favorites';
+let favorites = loadFavorites();
+let lastFocusedElement;
+let intersectionObserver;
+
+function loadFavorites() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY) || '[]');
+        return new Set(Array.isArray(saved) ? saved : []);
+    } catch {
+        return new Set();
+    }
+}
+
+function saveFavorites() {
+    try {
+        localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify([...favorites]));
+    } catch {
+        // Favorites remain available for this session when storage is unavailable.
+    }
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>'"]/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[character]));
+}
+
+function populateCategoryFilter() {
+    library.forEach((section) => {
+        const option = document.createElement('option');
+        option.value = section.category;
+        option.textContent = section.category;
+        categoryFilter.appendChild(option);
+    });
+}
 
 function openDrawer(name, desc, url, type) {
+    lastFocusedElement = document.activeElement;
     document.getElementById('drawer-title').innerText = name;
     document.getElementById('drawer-desc').innerText = desc;
     document.getElementById('drawer-link').href = url;
+    document.getElementById('drawer-link').setAttribute('aria-label', `Open ${name} in a new tab`);
     document.getElementById('drawer-type').innerText = type; // Set the type
 
     drawer.classList.add('active');
+    drawer.setAttribute('aria-hidden', 'false');
     overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    closeDrawerButton.focus();
 }
 
 function closeDrawer() {
     drawer.classList.remove('active');
+    drawer.setAttribute('aria-hidden', 'true');
     overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = 'auto';
+    lastFocusedElement?.focus();
 }
 
-function init() {
+function buildCard(item, itemIndex) {
+    const isFavorite = favorites.has(item.url);
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.itemIndex = itemIndex;
+    card.dataset.category = item.category;
+    card.dataset.type = item.type;
+    card.innerHTML = `
+        <div class="img-box">
+            <img src="${escapeHtml(item.img)}" alt="${escapeHtml(item.name)}" loading="lazy" decoding="async">
+        </div>
+        <div class="card-body">
+            <div class="card-header">
+                <div>
+                    <span class="type-tag">${escapeHtml(item.type)}</span>
+                    <h3>${escapeHtml(item.name)}</h3>
+                </div>
+                <button class="favorite-button${isFavorite ? ' is-favorite' : ''}" type="button" data-favorite-index="${itemIndex}" aria-pressed="${isFavorite}" aria-label="${isFavorite ? 'Remove' : 'Add'} ${escapeHtml(item.name)} ${isFavorite ? 'from' : 'to'} favorites">${isFavorite ? '★' : '☆'}</button>
+            </div>
+            <div class="btn-group">
+                <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="btn watch-now" aria-label="Open ${escapeHtml(item.name)} in a new tab">Visit <span aria-hidden="true">↗</span></a>
+                <button class="btn know-more" type="button" data-item-index="${itemIndex}" aria-label="Learn more about ${escapeHtml(item.name)}">Info</button>
+            </div>
+        </div>`;
+    return card;
+}
+
+function renderCatalog() {
+    mainContent.innerHTML = '';
+    catalogRecords.length = 0;
+    catalogSections.length = 0;
+
     library.forEach((section) => {
         const sectionContainer = document.createElement('div');
-        const sectionHtml = `
-            <h2 class="section-header" data-aos>${section.category}</h2>
-            <div class="grid">
-                ${section.items.map((item) => `
-                    <div class="card" data-aos>
-                        <div class="img-box"><img src="${item.img}" alt="${item.name}"></div>
-                        <div class="card-body">
-                            <span class="type-tag">${item.type}</span>
-                            <h3>${item.name}</h3>
-                            <div class="btn-group">
-                                <a href="${item.url}" target="_blank" class="btn watch-now">Watch</a>
-                                <button class="btn know-more" onclick="openDrawer('${item.name}', '${item.desc.replace(/'/g, "\\'")}', '${item.url}', '${item.type}')">Info</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        sectionContainer.innerHTML = sectionHtml;
+        sectionContainer.className = 'catalog-section';
+        sectionContainer.innerHTML = `<h2 class="section-header" data-aos>${escapeHtml(section.category)}</h2><div class="grid"></div>`;
+        const grid = sectionContainer.querySelector('.grid');
+        section.items.forEach((sourceItem) => {
+            const itemIndex = allItems.indexOf(sourceItem);
+            const item = { ...sourceItem, category: section.category };
+            const card = buildCard(item, itemIndex);
+            grid.appendChild(card);
+            catalogRecords.push({ card, grid, item, order: catalogRecords.length });
+        });
+        catalogSections.push({ element: sectionContainer, grid, category: section.category });
         mainContent.appendChild(sectionContainer);
     });
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
+    if ('IntersectionObserver' in window) {
+        intersectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    intersectionObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('[data-aos]').forEach((element) => intersectionObserver.observe(element));
+    } else {
+        document.querySelectorAll('[data-aos]').forEach((element) => element.classList.add('visible'));
+    }
 }
 
-document.getElementById('close-drawer').onclick = closeDrawer;
+function recordMatches(record) {
+    const { item } = record;
+    const query = state.query.trim().toLowerCase();
+    const searchableText = `${item.name} ${item.category} ${item.type} ${item.desc}`.toLowerCase();
+    return (!query || searchableText.includes(query))
+        && (state.category === 'all' || item.category === state.category)
+        && (state.type === 'all' || item.type === state.type)
+        && (!state.favoritesOnly || favorites.has(item.url));
+}
+
+function applyFilters() {
+    if (state.sort === 'alphabetical') {
+        catalogSections.forEach(({ grid }) => {
+            catalogRecords.filter((record) => record.grid === grid)
+                .sort((a, b) => a.item.name.localeCompare(b.item.name))
+                .forEach((record) => grid.appendChild(record.card));
+        });
+    } else {
+        catalogRecords.slice().sort((a, b) => a.order - b.order).forEach((record) => record.grid.appendChild(record.card));
+    }
+
+    let visibleCount = 0;
+    catalogRecords.forEach((record) => {
+        const visible = recordMatches(record);
+        record.card.hidden = !visible;
+        record.card.classList.toggle('is-hidden', !visible);
+        if (visible) visibleCount += 1;
+    });
+    catalogSections.forEach((section) => {
+        const hasVisibleCard = [...section.grid.children].some((card) => !card.hidden);
+        section.element.hidden = !hasVisibleCard;
+    });
+
+    const noun = visibleCount === 1 ? 'site' : 'sites';
+    resultCount.textContent = state.favoritesOnly
+        ? `${visibleCount} favorite ${noun}`
+        : `${visibleCount} of ${allItems.length} ${noun}`;
+    emptyState.hidden = visibleCount !== 0;
+}
+
+function resetFilters() {
+    state.query = '';
+    state.category = 'all';
+    state.type = 'all';
+    state.sort = 'curated';
+    state.favoritesOnly = false;
+    searchInput.value = '';
+    categoryFilter.value = 'all';
+    typeFilter.value = 'all';
+    sortSelect.value = 'curated';
+    favoritesToggle.setAttribute('aria-pressed', 'false');
+    favoritesToggle.querySelector('span').textContent = '☆';
+    applyFilters();
+    searchInput.focus();
+}
+
+function updateFavoriteButton(button, item) {
+    const isFavorite = favorites.has(item.url);
+    button.classList.toggle('is-favorite', isFavorite);
+    button.setAttribute('aria-pressed', String(isFavorite));
+    button.setAttribute('aria-label', `${isFavorite ? 'Remove' : 'Add'} ${item.name} ${isFavorite ? 'from' : 'to'} favorites`);
+    button.textContent = isFavorite ? '★' : '☆';
+}
+
+function init() {
+    populateCategoryFilter();
+    renderCatalog();
+    applyFilters();
+
+    mainContent.addEventListener('click', (event) => {
+        const favoriteButton = event.target.closest('.favorite-button');
+        if (favoriteButton) {
+            const item = allItems[favoriteButton.dataset.favoriteIndex];
+            if (favorites.has(item.url)) favorites.delete(item.url); else favorites.add(item.url);
+            saveFavorites();
+            updateFavoriteButton(favoriteButton, item);
+            applyFilters();
+            return;
+        }
+        const button = event.target.closest('.know-more');
+        if (!button) return;
+        const item = allItems[button.dataset.itemIndex];
+        openDrawer(item.name, item.desc, item.url, item.type);
+    });
+
+    mainContent.addEventListener('error', (event) => {
+        const image = event.target;
+        if (image.tagName !== 'IMG' || image.dataset.fallback) return;
+        image.dataset.fallback = 'true';
+        image.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='360' viewBox='0 0 640 360'%3E%3Crect width='640' height='360' fill='%23151515'/%3E%3Ctext x='50%25' y='50%25' fill='%23c5a059' font-family='sans-serif' font-size='24' text-anchor='middle' dominant-baseline='middle'%3EImage unavailable%3C/text%3E%3C/svg%3E`;
+        image.alt = `${image.alt} (image unavailable)`;
+    }, true);
+}
+
+closeDrawerButton.onclick = closeDrawer;
 overlay.onclick = closeDrawer;
+
+searchInput.addEventListener('input', () => { state.query = searchInput.value; applyFilters(); });
+categoryFilter.addEventListener('change', () => { state.category = categoryFilter.value; applyFilters(); });
+typeFilter.addEventListener('change', () => { state.type = typeFilter.value; applyFilters(); });
+sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; applyFilters(); });
+favoritesToggle.addEventListener('click', () => {
+    state.favoritesOnly = !state.favoritesOnly;
+    favoritesToggle.setAttribute('aria-pressed', String(state.favoritesOnly));
+    favoritesToggle.querySelector('span').textContent = state.favoritesOnly ? '★' : '☆';
+    applyFilters();
+});
+clearFiltersButton.addEventListener('click', resetFilters);
+
+window.addEventListener('scroll', () => {
+    backToTopButton.classList.toggle('is-visible', window.scrollY > 500);
+}, { passive: true });
+backToTopButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && drawer.classList.contains('active')) closeDrawer();
+
+    if (event.key === 'Tab' && drawer.classList.contains('active')) {
+        const focusable = drawer.querySelectorAll('button, [href]');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    }
+});
 
 window.onload = init;
 

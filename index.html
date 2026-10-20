@@ -8,38 +8,88 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
     <header>
-        <h1>FreeFlix+</h1>
-        <p>Your portal to legendary storytelling</p>
+        <div class="brand-lockup">
+            <p class="eyebrow">Entertainment directory</p>
+            <h1>FreeFlix<span>+</span></h1>
+            <p class="tagline">Your portal to legendary storytelling</p>
+        </div>
     </header>
+
+    <section class="discovery container" aria-labelledby="discovery-title">
+        <div class="discovery-heading">
+            <div>
+                <p class="eyebrow">Find your next watch</p>
+                <h2 id="discovery-title">Browse the collection</h2>
+            </div>
+            <p class="result-count" id="result-count" aria-live="polite">Loading collection…</p>
+        </div>
+        <div class="controls" role="search">
+            <label class="search-field" for="search-input">
+                <span class="sr-only">Search sites</span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><path d="m21 21-4.35-4.35m1.35-5.4a6.75 6.75 0 1 1-13.5 0 6.75 6.75 0 0 1 13.5 0Z"/></svg>
+                <input id="search-input" type="search" placeholder="Search sites, categories, or types" autocomplete="off">
+            </label>
+            <label class="select-field" for="category-filter">
+                <span class="sr-only">Filter by category</span>
+                <select id="category-filter">
+                    <option value="all">All categories</option>
+                </select>
+            </label>
+            <label class="select-field" for="type-filter">
+                <span class="sr-only">Filter by type</span>
+                <select id="type-filter">
+                    <option value="all">All types</option>
+                    <option value="Streaming">Streaming</option>
+                    <option value="Downloading">Downloading</option>
+                </select>
+            </label>
+            <label class="select-field" for="sort-select">
+                <span class="sr-only">Sort collection</span>
+                <select id="sort-select">
+                    <option value="curated">Curated order</option>
+                    <option value="alphabetical">A–Z</option>
+                </select>
+            </label>
+            <button class="favorites-toggle" id="favorites-toggle" type="button" aria-pressed="false">
+                <span aria-hidden="true">☆</span> Favorites
+            </button>
+        </div>
+        <aside class="safety-note" aria-label="Safety notice">
+            <span class="safety-icon" aria-hidden="true">!</span>
+            <p><strong>Browse mindfully.</strong> Some external sites may be unofficial or ad-supported. Check the address before opening a link, and use your usual browser safety tools.</p>
+        </aside>
+    </section>
 
     <main class="container" id="main-content"></main>
 
-    <div class="drawer-overlay" id="overlay"></div>
-    <div class="drawer" id="drawer">
-        <button class="close-drawer" id="close-drawer">&times;</button>
+    <div class="empty-state" id="empty-state" hidden>
+        <span class="empty-icon" aria-hidden="true">⌕</span>
+        <h2>No matches found</h2>
+        <p>Try a different search term or clear one of the filters.</p>
+        <button class="btn know-more" id="clear-filters" type="button">Clear filters</button>
+    </div>
+
+    <div class="drawer-overlay" id="overlay" aria-hidden="true"></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" aria-describedby="drawer-desc" aria-hidden="true">
+        <button class="close-drawer" id="close-drawer" type="button" aria-label="Close details panel">&times;</button>
         <div class="drawer-content">
             <span id="drawer-type" class="type-tag">Type</span>
             <h2 id="drawer-title">Title</h2>
             <p id="drawer-desc">Description goes here...</p>
-            <a href="#" id="drawer-link" target="_blank" class="btn watch-now">Visit Site</a>
+            <a href="#" id="drawer-link" target="_blank" rel="noopener noreferrer" class="btn watch-now">Visit Site</a>
         </div>
-    </div>
+    </aside>
 
     <footer>
         &copy; 2026 FREEFLIX PLUS NOIR | PREMIUM ENTERTAINMENT HUB <br>
         CURATED BY JOSHIN SAJU WITH ❤️ AND CAFFEINE
     </footer>
 
+    <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">↑ <span>Top</span></button>
+
     <script src="./script.js"></script>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-
-</html>
-
-
-
->>>>>>> 2755b46402fe0e9ed6dcb496dc124b8ac14d0dac
